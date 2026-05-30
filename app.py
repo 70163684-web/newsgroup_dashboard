@@ -43,7 +43,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. ADVANCED DATA PROCESSING ENGINE ---
+# --- 2. DATA PROCESSING ENGINE ---
 @st.cache_data
 def load_and_process_tar_safe():
     fallback_categories = [
@@ -103,7 +103,7 @@ def load_and_process_tar_safe():
         except:
             pass
 
-    # Enterprise Fallback Scale Matrix
+    # Enterprise Fallback Matrix Generator
     rows = []
     np.random.seed(42)
     sample_keywords = ["system", "nasa", "encryption", "graphics", "software", "government", "hockey", "baseball", "engine"]
@@ -124,28 +124,24 @@ def load_and_process_tar_safe():
 
 df = load_and_process_tar_safe()
 
-# --- 3. ADVANCED SIDEBAR CONTROL MATRIX ---
+# --- 3. SIDEBAR CONTROL HUB ---
 st.sidebar.markdown("<h2 style='color:#38bdf8; margin-bottom:0;'>Navigation Hub</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v7.0</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v7.2</p>", unsafe_allow_html=True)
 st.sidebar.write("---")
 
 st.sidebar.subheader("🎛️ Filter Configuration")
 
-# Category Selector
 all_cats = sorted(df['Category'].unique())
 selected_cats = st.sidebar.multiselect("Select Target Categories", all_cats, default=all_cats[:4])
 
-# Sentiment Selector
 all_sents = df['Sentiment'].unique()
 selected_sents = st.sidebar.multiselect("Filter Sentiment Classes", all_sents, default=list(all_sents))
 
-# Advanced Range Sliders (Like Top Dashboards)
 st.sidebar.write("---")
 st.sidebar.subheader("📐 Threshold Configurations")
 min_words, max_words = int(df['Word_Count'].min()), int(df['Word_Count'].max())
 selected_word_range = st.sidebar.slider("Document Word Count Range", min_words, max_words, (min_words, max_words))
 
-# Apply Filters
 filtered_df = df[
     (df['Category'].isin(selected_cats)) & 
     (df['Sentiment'].isin(selected_sents)) & 
@@ -179,7 +175,7 @@ with col4:
 
 st.write("---")
 
-# --- 6. HIGH PERFORMANCE CHARTS & MULTI-TABS ---
+# --- 6. CHARTS & MULTI-TABS ---
 tab1, tab2, tab3 = st.tabs(["📊 Distribution Diagnostics", "🔍 Text Metric Exploration", "🔤 Keyword Analytics"])
 
 with tab1:
@@ -188,7 +184,7 @@ with tab1:
         st.subheader("📌 Volume Distribution Across Categories")
         if not filtered_df.empty:
             cat_counts = filtered_df['Category'].value_counts().reset_index()
-            cat_counts.columns = ['Category', 'Volume']
+            cat_counts.columns = ['Category', 'Volume'] # Explicit column mapping
             fig_bar = px.bar(cat_counts, x='Volume', y='Category', orientation='h',
                              color='Volume', color_continuous_scale='Blues', template='plotly_dark')
             fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, margin=dict(t=10, b=10))
@@ -197,8 +193,11 @@ with tab1:
     with g_col2:
         st.subheader("🎯 Scaled Sentiment Breakdown")
         if not filtered_df.empty:
-            sent_counts = filtered_df['Sentiment'].value_counts().reset_index()
-            fig_pie = px.pie(sent_counts, values='count', names='Sentiment', hole=0.5,
+            # FIX: Explicit data framing with standard column keys to fix 'count' KeyError
+            sent_series = filtered_df['Sentiment'].value_counts()
+            sent_counts = pd.DataFrame({'Sentiment': sent_series.index, 'Volume': sent_series.values})
+            
+            fig_pie = px.pie(sent_counts, values='Volume', names='Sentiment', hole=0.5,
                              color='Sentiment', color_discrete_map={'Positive':'#0ea5e9', 'Neutral':'#64748b', 'Negative':'#ef4444'},
                              template='plotly_dark')
             fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=400, margin=dict(t=10, b=10))
@@ -215,29 +214,19 @@ with tab2:
 
 with tab3:
     st.subheader("🔤 Top Contextual Keywords Frequency")
-    st.markdown("Extracting the most frequent analytical tokens inside the filtered text corpus.")
-    
     if not filtered_df.empty:
-        # Dependency-free token frequency mapping
         text_corpus = " ".join(filtered_df['Content'].astype(str)).lower()
         words = text_corpus.split()
-        
-        # Stopwords cleaning map
         stopwords_list = {'the', 'and', 'for', 'with', 'under', 'core', 'vector', 'stream', 'packet', 'routing', 'confirmed', 'system', 'from', 'this', 'that'}
         cleaned_words = [w for w in words if w.isalpha() and w not in stopwords_list and len(w) > 3]
         
         word_counts = Counter(cleaned_words).most_common(12)
-        
         if word_counts:
             wd_df = pd.DataFrame(word_counts, columns=['Keyword', 'Frequency'])
             fig_words = px.bar(wd_df, x='Frequency', y='Keyword', orientation='h',
                                color='Frequency', color_continuous_scale='GnBu', template='plotly_dark')
             fig_words.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=380)
             st.plotly_chart(fig_words, use_container_width=True)
-        else:
-            st.info("Processing sufficient tokens...")
-    else:
-        st.info("Adjust settings to map key vectors.")
 
 st.write("---")
 
