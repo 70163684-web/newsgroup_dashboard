@@ -126,7 +126,7 @@ df = load_and_process_tar_safe()
 
 # --- 3. SIDEBAR CONTROL HUB ---
 st.sidebar.markdown("<h2 style='color:#38bdf8; margin-bottom:0;'>Navigation Hub</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v7.2</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v7.5</p>", unsafe_allow_html=True)
 st.sidebar.write("---")
 
 st.sidebar.subheader("🎛️ Filter Configuration")
@@ -175,7 +175,7 @@ with col4:
 
 st.write("---")
 
-# --- 6. CHARTS & MULTI-TABS ---
+# --- 6. ZOOM-ENABLED CHARTS & MULTI-TABS ---
 tab1, tab2, tab3 = st.tabs(["📊 Distribution Diagnostics", "🔍 Text Metric Exploration", "🔤 Keyword Analytics"])
 
 with tab1:
@@ -184,16 +184,23 @@ with tab1:
         st.subheader("📌 Volume Distribution Across Categories")
         if not filtered_df.empty:
             cat_counts = filtered_df['Category'].value_counts().reset_index()
-            cat_counts.columns = ['Category', 'Volume'] # Explicit column mapping
+            cat_counts.columns = ['Category', 'Volume']
             fig_bar = px.bar(cat_counts, x='Volume', y='Category', orientation='h',
                              color='Volume', color_continuous_scale='Blues', template='plotly_dark')
-            fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=400, margin=dict(t=10, b=10))
+            
+            # Zoom aur controls config map karein
+            fig_bar.update_layout(
+                paper_bgcolor='rgba(0,0,0,0)', 
+                plot_bgcolor='rgba(0,0,0,0)', 
+                height=400, 
+                margin=dict(t=10, b=10),
+                dragmode='zoom' # Zooming mode enabled by default
+            )
             st.plotly_chart(fig_bar, use_container_width=True)
             
     with g_col2:
         st.subheader("🎯 Scaled Sentiment Breakdown")
         if not filtered_df.empty:
-            # FIX: Explicit data framing with standard column keys to fix 'count' KeyError
             sent_series = filtered_df['Sentiment'].value_counts()
             sent_counts = pd.DataFrame({'Sentiment': sent_series.index, 'Volume': sent_series.values})
             
@@ -205,12 +212,27 @@ with tab1:
 
 with tab2:
     st.subheader("⚡ Document Length vs Sentiment Distribution Matrix")
+    st.markdown("💡 *Tip: Aap mouse click aur drag karke is graph ko **Zoom-in** kar sakte hain aur double click karke reset kar sakte hain.*")
     if not filtered_df.empty:
+        # Full dynamic scatter with clear zoom-pan triggers
         fig_scatter = px.scatter(filtered_df, x='Word_Count', y='Sentiment_Score', color='Sentiment',
                                  size='Word_Count', hover_name='Doc_ID', template='plotly_dark',
                                  color_discrete_map={'Positive':'#0ea5e9', 'Neutral':'#64748b', 'Negative':'#ef4444'}, opacity=0.7)
-        fig_scatter.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=420)
-        st.plotly_chart(fig_scatter, use_container_width=True)
+        
+        # Activating full interactive control configuration bar
+        fig_scatter.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)', 
+            plot_bgcolor='rgba(0,0,0,0)', 
+            height=420,
+            dragmode='zoom', # Mouse select zoom support
+            hovermode='closest'
+        )
+        
+        # Top tools panel explicitly dynamic display settings 
+        fig_scatter.update_xaxes(showgrid=True, gridcolor='#1f2937')
+        fig_scatter.update_yaxes(showgrid=True, gridcolor='#1f2937')
+        
+        st.plotly_chart(fig_scatter, use_container_width=True, config={'scrollZoom': True, 'displayModeBar': True})
 
 with tab3:
     st.subheader("🔤 Top Contextual Keywords Frequency")
@@ -225,7 +247,7 @@ with tab3:
             wd_df = pd.DataFrame(word_counts, columns=['Keyword', 'Frequency'])
             fig_words = px.bar(wd_df, x='Frequency', y='Keyword', orientation='h',
                                color='Frequency', color_continuous_scale='GnBu', template='plotly_dark')
-            fig_words.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=380)
+            fig_words.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=380, dragmode='zoom')
             st.plotly_chart(fig_words, use_container_width=True)
 
 st.write("---")
