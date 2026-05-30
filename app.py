@@ -14,20 +14,24 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Injecting Custom Corporate Premium Dark Layout Styling
+# Premium Dark Grid CSS - Optimized for Heading Visibility & Chart Labels
 st.markdown("""
     <style>
     .main { background-color: #0b0f19 !important; color: #f3f4f6 !important; }
-    h1 { color: #ffffff !important; font-weight: 800 !important; font-size: 36px !important; margin-bottom: 2px !important; }
-    h2, h3, .stTabs [data-baseweb="tab"] { color: #ffffff !important; font-weight: 600 !important; }
+    h1 { color: #ffffff !important; font-weight: 800 !important; font-size: 34px !important; margin-bottom: 5px !important; }
+    h2, h3 { color: #f3f4f6 !important; font-weight: 600 !important; padding-top: 10px; }
+    
+    /* Fix for Tab and Visual Text Visibility */
+    .stTabs [data-baseweb="tab"] { color: #9ca3af !important; font-weight: bold !important; font-size: 15px; }
+    .stTabs [aria-selected="true"] { color: #38bdf8 !important; border-bottom-color: #38bdf8 !important; }
     
     div[data-testid="stMetricValue"] {
-        font-size: 32px !important;
+        font-size: 30px !important;
         font-weight: 800 !important;
         color: #38bdf8 !important;
     }
     div[data-testid="stMetricLabel"] {
-        font-size: 12px !important;
+        font-size: 11px !important;
         color: #9ca3af !important;
         text-transform: uppercase;
         letter-spacing: 0.5px;
@@ -35,10 +39,10 @@ st.markdown("""
     .metric-container-box {
         background-color: #111827;
         border: 1px solid #1f2937;
-        padding: 20px;
+        padding: 15px;
         border-radius: 10px;
         box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     .stSidebar { background-color: #0f172a !important; }
     </style>
@@ -52,7 +56,7 @@ fallback_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. FAIL-SAFE HIGH VOLUME REFRESH DATA ENGINE ---
+# --- 2. FAIL-SAFE DATA ENGINE ---
 @st.cache_data
 def compile_dataset_matrix():
     possible_files = ["20news-bydate.tar.gz", "20news-bydate.tar", "20news-bydate.tat.gz"]
@@ -70,7 +74,7 @@ def compile_dataset_matrix():
                 limit = 0
                 for member in tar.getmembers():
                     if member.isfile() and ("train" in member.name or "test" in member.name):
-                        if limit > 4000:
+                        if limit > 4500:
                             break
                         parts = member.name.split('/')
                         if len(parts) >= 3:
@@ -100,7 +104,7 @@ def compile_dataset_matrix():
         except:
             pass
 
-    # Safe Mode Real Extraction Backup Layer
+    # Simulation Ingestion Layer
     simulated_rows = []
     np.random.seed(42)
     keywords = ["subsystem", "payload", "encryption", "protocol", "graphics", "module", "hardware"]
@@ -112,173 +116,3 @@ def compile_dataset_matrix():
         
         score = np.random.uniform(-0.9, 0.95)
         sent_label = 'Positive' if score > 0.15 else ('Negative' if score < -0.15 else 'Neutral')
-        kw = np.random.choice(keywords)
-        
-        simulated_rows.append({
-            'Doc_ID': f"Intel_Data_Node_{55000+i}.txt", 'Category': cat,
-            'Content': f"Enterprise Text Intelligence Archive log. Ingestion pipeline tracked high density tokens for category {cat}. Key contextual tag: {kw}. System data synchronization state clear.",
-            'Word_Count': w_count, 'Sentiment': sent_label, 'Sentiment_Score': round(score, 2)
-        })
-    return pd.DataFrame(simulated_rows)
-
-df = compile_dataset_matrix()
-
-# --- 3. EXPANDED SIDEBAR CONTROL CENTER ---
-st.sidebar.markdown("<h2 style='color:#38bdf8; margin-bottom:0;'>Navigation Hub</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#6b7280; font-size:11px;'>Architecture Pipeline v10.0 • Verified</p>", unsafe_allow_html=True)
-st.sidebar.write("---")
-
-st.sidebar.subheader("🎛️ Filter Matrix Configurations")
-
-available_cats = sorted(df['Category'].unique()) if not df.empty else fallback_categories
-selected_categories = st.sidebar.multiselect("Select Target Categories", available_cats, default=available_cats[:4])
-
-available_sents = ['Positive', 'Neutral', 'Negative']
-selected_sentiments = st.sidebar.multiselect("Filter Sentiment Classes", available_sents, default=available_sents)
-
-st.sidebar.write("---")
-st.sidebar.subheader("📐 High-Volume Sliders")
-
-min_w, max_w = int(df['Word_Count'].min()), int(df['Word_Count'].max())
-chosen_word_range = st.sidebar.slider("Document Word Count Threshold", min_w, max_w, (min_w, max_w))
-
-st.sidebar.write("---")
-st.sidebar.subheader("🔍 Context Registry Search")
-search_query = st.sidebar.text_input("Type target keyword query:", "")
-
-# STABLE FILTER MAPPING OPERATION
-if not df.empty:
-    working_df = df[
-        (df['Category'].isin(selected_categories)) & 
-        (df['Sentiment'].isin(selected_sentiments)) & 
-        (df['Word_Count'] >= chosen_word_range[0]) & 
-        (df['Word_Count'] <= chosen_word_range[1])
-    ]
-    if search_query:
-        working_df = working_df[working_df['Content'].str.contains(search_query, case=False)]
-else:
-    working_df = pd.DataFrame(columns=['Doc_ID', 'Category', 'Content', 'Word_Count', 'Sentiment', 'Sentiment_Score'])
-
-# --- 4. ENGINE INTERFACE MAIN HEADER ---
-st.title("🔮 20-Newsgroups Semantic Analytics Platform")
-st.markdown("Automated text intelligence dashboard processing heavy metadata and classification distribution layers.")
-st.write("---")
-
-# --- 5. SYSTEM KPI METRICS PANEL ---
-m_col1, m_col2, m_col3, m_col4 = st.columns(4)
-with m_col1:
-    st.markdown('<div class="metric-container-box">', unsafe_allow_html=True)
-    st.metric(label="Total Scanned Files", value=f"{len(working_df):,}")
-    st.markdown('</div>', unsafe_allow_html=True)
-with m_col2:
-    st.markdown('<div class="metric-container-box">', unsafe_allow_html=True)
-    active_subsets = working_df['Category'].nunique() if not working_df.empty else 0
-    st.metric(label="Active Target Subsets", value=f"{active_subsets} / 20")
-    st.markdown('</div>', unsafe_allow_html=True)
-with m_col3:
-    st.markdown('<div class="metric-container-box">', unsafe_allow_html=True)
-    accumulated_words = working_df['Word_Count'].sum() if not working_df.empty else 0
-    st.metric(label="Total Word Volume Counter", value=f"{accumulated_words:,}")
-    st.markdown('</div>', unsafe_allow_html=True)
-with m_col4:
-    st.markdown('<div class="metric-container-box">', unsafe_allow_html=True)
-    average_density = int(working_df['Word_Count'].mean()) if (not working_df.empty and len(working_df) > 0) else 0
-    st.metric(label="Avg Document Density", value=f"{average_density} words")
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.write("---")
-
-# --- 6. CHART TABS ---
-tab_dist, tab_scatter, tab_words = st.tabs(["📊 Category Distributions", "🔍 Text Metric Exploration", "🔤 Token Frequencies"])
-
-with tab_dist:
-    layout_col1, layout_col2 = st.columns((3, 2))
-    with layout_col1:
-        st.subheader("📌 Volume Distribution Across Categories")
-        if not working_df.empty and len(working_df) > 0:
-            distribution_counts = working_df['Category'].value_counts().reset_index()
-            distribution_counts.columns = ['Category', 'Volume']
-            
-            fig_bar = px.bar(distribution_counts, x='Volume', y='Category', orientation='h',
-                             color='Volume', color_continuous_scale='Blues', template='plotly_dark')
-            fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=380, margin=dict(t=10, b=10))
-            st.plotly_chart(fig_bar, use_container_width=True)
-        else:
-            st.info("No data tracking options found. Adjust the filter configuration matrix.")
-            
-    with layout_col2:
-        st.subheader("🎯 Overall Sentiment Profile Breakdown")
-        if not working_df.empty and len(working_df) > 0:
-            sentiment_summary = working_df['Sentiment'].value_counts().reset_index()
-            sentiment_summary.columns = ['Sentiment', 'Volume']
-            
-            fig_pie = px.pie(sentiment_summary, values='Volume', names='Sentiment', hole=0.45,
-                             color='Sentiment', color_discrete_map={'Positive':'#0ea5e9', 'Neutral':'#64748b', 'Negative':'#ef4444'},
-                             template='plotly_dark')
-            fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=380, margin=dict(t=10, b=10))
-            st.plotly_chart(fig_pie, use_container_width=True)
-
-with tab_scatter:
-    st.subheader("⚡ Document Length vs Sentiment Distribution Matrix")
-    st.markdown("💡 *Dynamic Controls Layout: Click and drag your cursor over the chart workspace to **Zoom-In** instantly.*")
-    
-    if not working_df.empty and len(working_df) > 0:
-        # ABSOLUTE SAFE ENGINE WITHOUT ANY KEYERROR MAPPING LOOPS
-        fig_scatter = px.scatter(
-            working_df, 
-            x='Word_Count', 
-            y='Sentiment_Score',
-            color='Sentiment',
-            size='Word_Count', 
-            hover_name='Doc_ID', 
-            template='plotly_dark',
-            color_discrete_sequence=['#0ea5e9', '#64748b', '#ef4444'],
-            opacity=0.65
-        )
-        fig_scatter.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', 
-            height=420, dragmode='zoom', hovermode='closest'
-        )
-        fig_scatter.update_xaxes(showgrid=True, gridcolor='#1f2937')
-        fig_scatter.update_yaxes(showgrid=True, gridcolor='#1f2937')
-        st.plotly_chart(fig_scatter, use_container_width=True, config={'scrollZoom': True, 'displayModeBar': True})
-    else:
-        st.info("Configuration state empty. Verify filter selections to populate the text metric scatter map.")
-
-with tab_words:
-    st.subheader("🔤 Top Contextual Keywords Tracking Hub")
-    if not working_df.empty and len(working_df) > 0:
-        corpus_string = " ".join(working_df['Content'].astype(str)).lower()
-        individual_tokens = corpus_string.split()
-        system_stopwords = {'the', 'and', 'for', 'with', 'under', 'core', 'system', 'from', 'this', 'that', 'heavy', 'logged', 'across', 'path'}
-        
-        filtered_tokens = [t for t in individual_tokens if t.isalpha() and t not in system_stopwords and len(t) > 3]
-        frequent_tokens = Counter(filtered_tokens).most_common(12)
-        
-        if frequent_tokens:
-            token_df = pd.DataFrame(frequent_tokens, columns=['Keyword', 'Frequency'])
-            fig_tokens = px.bar(token_df, x='Frequency', y='Keyword', orientation='h',
-                                color='Frequency', color_continuous_scale='GnBu', template='plotly_dark')
-            fig_tokens.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=380)
-            st.plotly_chart(fig_tokens, use_container_width=True)
-
-st.write("---")
-
-# --- 7. DOCUMENT EXPLORER TABLE GRID ---
-st.subheader("🔎 Advanced Document Explorer Engine")
-
-if not working_df.empty:
-    st.dataframe(
-        working_df[['Doc_ID', 'Category', 'Word_Count', 'Sentiment', 'Sentiment_Score', 'Content']],
-        use_container_width=True,
-        column_config={
-            "Content": st.column_config.TextColumn("Text Content (Snippet Metadata)", width="large"),
-            "Word_Count": st.column_config.NumberColumn("Word Density Count", format="%d"),
-            "Sentiment_Score": st.column_config.ProgressColumn("Sentiment Intensity Scale", min_value=-1.0, max_value=1.0, format="%.2f")
-        }
-    )
-else:
-    st.warning("No enterprise tabular logs available for current system filter state.")
-
-# CRITICAL SYNTAX BRACKET PROTECTION MATRIX CHECK
-st.markdown("<br><hr><center style='color:#4b5563; font-size:13px;'>Secure Enterprise Text Analytics Panel • Powered by Streamlit</center>", unsafe_allow_html=True)
