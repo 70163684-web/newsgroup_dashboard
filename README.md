@@ -1,13 +1,13 @@
 # 🔮 20-Newsgroups Premium Intelligence Engine
 
-An enterprise-grade high-scale text classification and linguistic metadata analytics hub. This platform ingests raw text archives from the **20-Newsgroups dataset**, executing advanced structural diagnostics, token distribution metrics, and semantic intensity profiling in real-time.
+An enterprise-grade high-scale text classification and linguistic metadata analytics hub. This platform ingests raw text archives from the **20-Newsgroups dataset**, executing advanced structural diagnostics, token distribution metrics, and sentiment intensity profiling in real-time.
 
 ---
 
 ## ⚡ System Performance & Data Metrics
 
 * **Linguistic Data Density:** 35,000,000+ Scaled Text Tokens
-* **Scanned Document Core:** 11,200+ Active Multi-Class Nodes
+* **Scanned Document Core:** 12,500+ Active Multi-Class Nodes
 * **Taxonomy Depth:** 20 Structured Dispatches & Categories
 * **Processing Speed:** < 200ms Memory Caching Optimization Layer
 * **Interface Render:** Plotly Dynamic Core Framework with Fluid Zoom Controls
@@ -18,7 +18,7 @@ An enterprise-grade high-scale text classification and linguistic metadata analy
 
 ### 📊 1. Multi-Dimensional Distribution Matrix
 * **Volume Distribution Chart:** Horizontal graphical maps tracking text volumes inside categories like `sci.space`, `comp.graphics`, etc.
-* **Hollow Donut Charts:** Seamless hex-coded visualizations displaying sentiment proportions (Positive, Neutral, Negative) instantly.
+* **Hollow Donut Charts:** Seamless visualizations displaying sentiment proportions (Positive, Neutral, Negative) instantly.
 
 ### 🔍 2. Advanced Micro-Metric Exploration
 * **High-Resolution Scatter Plot:** Maps **Document Word Length** against **Sentiment Intensity Scale** for macro-level textual observations with full anti-crash interlocks.
