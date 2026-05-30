@@ -44,17 +44,18 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HIGH-VOLUME WORD COUNT DATA ENGINE ---
+# Full standard categories array for flawless mapping stability
+fallback_categories = [
+    'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
+    'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
+    'rec.motorcycles', 'rec.sport.baseball', 'rec.sport.hockey', 'sci.crypt',
+    'sci.electronics', 'sci.med', 'sci.space', 'soc.religion.christian',
+    'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
+]
+
+# --- 2. FAIL-SAFE HIGH-VOLUME WORD COUNT ENGINE ---
 @st.cache_data
 def load_and_process_heavy_data():
-    fallback_categories = [
-        'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
-        'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
-        'rec.motorcycles', 'rec.sport.baseball', 'rec.sport.hockey', 'sci.crypt',
-        'sci.electronics', 'sci.med', 'sci.space', 'soc.religion.christian',
-        'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
-    ]
-
     possible_paths = ["20news-bydate.tar.gz", "20news-bydate.tar", "20news-bydate.tar.gz/20news-bydate.tar"]
     target_path = None
     for path in possible_paths:
@@ -62,7 +63,6 @@ def load_and_process_heavy_data():
             target_path = path
             break
 
-    # Real File Handler with Extra Word-Count Multipliers
     if target_path:
         open_mode = "r:gz" if target_path.endswith(".gz") else "r:"
         extracted_data = []
@@ -103,7 +103,7 @@ def load_and_process_heavy_data():
         except:
             pass
 
-    # Enterprise Premium High-Volume Simulation
+    # Enterprise Premium Simulation Generator (Guarantees zero white screens)
     rows = []
     np.random.seed(44)
     sample_keywords = ["architecture", "satellite", "cryptography", "rendering", "subsystem", "payload", "algorithm", "protocol"]
@@ -126,24 +126,20 @@ def load_and_process_heavy_data():
 
 df = load_and_process_heavy_data()
 
-# --- 3. EXPANDED SIDEBAR FILTER CONFIGURATION HUB ---
+# --- 3. EXPANDED SIDEBAR CONTROLS ---
 st.sidebar.markdown("<h2 style='color:#38bdf8; margin-bottom:0;'>Navigation Hub</h2>", unsafe_allow_html=True)
-st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v8.5 • Live</p>", unsafe_allow_html=True)
+st.sidebar.markdown("<p style='color:#6b7280; font-size:12px;'>Enterprise Hub v9.0 • Protected</p>", unsafe_allow_html=True)
 st.sidebar.write("---")
 
 st.sidebar.subheader("🎛️ Filter Configuration")
 
-# 1. Target Categories
-all_cats = sorted(df['Category'].unique())
+all_cats = sorted(df['Category'].unique()) if not df.empty else fallback_categories
 selected_cats = st.sidebar.multiselect("Select Target Categories", all_cats, default=all_cats[:4])
 
-# 2. Sentiment Classes
-all_sents = list(df['Sentiment'].unique())
+all_sents = ['Positive', 'Neutral', 'Negative']
 selected_sents = st.sidebar.multiselect("Filter Sentiment Classes", all_sents, default=all_sents)
 
 st.sidebar.write("---")
 st.sidebar.subheader("📐 High-Volume Sliders")
 
-# 3. Word Count Range Slider
-min_words, max_words = int(df['Word_Count'].min()), int(df['Word_Count'].max())
-selected_word_range = st.sidebar.slider
+min_words = int(df
