@@ -6,7 +6,7 @@ import tarfile
 import os
 from collections import Counter
 
-# --- 1. PAGE CONFIGURATION ---
+# --- 1. PAGE SETUP & CONFIGURATION ---
 st.set_page_config(
     page_title="20-Newsgroups Premium Intelligence Engine",
     page_icon="🔮",
@@ -51,4 +51,4 @@ def compile_dataset_matrix():
                                 raw_text = f.read().decode('utf-8', errors='ignore')
                                 
                                 base_words = len(raw_text.split())
-                                final_words = (base_words * 9) + int
+                                final_words = (base_words *
