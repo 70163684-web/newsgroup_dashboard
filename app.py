@@ -21,7 +21,7 @@ target_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. SAFE & BALANCED DATA GENERATOR (BRACKET FIXED) ---
+# --- 2. SAFE & BALANCED DATA GENERATOR ---
 @st.cache_data(ttl=3600)
 def compile_dataset_matrix():
     records = []
@@ -41,7 +41,6 @@ def compile_dataset_matrix():
         if w_count < 5:
             w_count = 5
             
-        # BRACKET FIX APPLIED HERE PERFECTLY
         score = np.random.uniform(-0.85, 0.85)
         
         if score > 0.15:
@@ -52,4 +51,7 @@ def compile_dataset_matrix():
             sentiment = 'Neutral'
         
         records.append({
-            'Doc_
+            'Doc_ID': f"Intel_Node_{95000+i}.txt", 
+            'Category': cat,
+            'Content': f"Ingestion record reference node code {cat}. " + sample_logs[i % 4],
+            'Word_Count': w_count
