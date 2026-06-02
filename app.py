@@ -15,13 +15,10 @@ st.set_page_config(
 # Custom High-End Cyberpunk Glassmorphism Styles (Gym Nexus Theme Adaptation)
 st.markdown("""
     <style>
-    /* Main Background adjustments */
     .stApp {
         background-color: #030712;
         color: #f3f4f6;
     }
-    
-    /* Custom Modern Card Design */
     .premium-card {
         background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
         border: 1px solid rgba(255, 255, 255, 0.05);
@@ -30,8 +27,6 @@ st.markdown("""
         margin-bottom: 20px;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     }
-    
-    /* Mini Metric Container */
     .metric-container {
         background: rgba(15, 23, 42, 0.5);
         border: 1px solid rgba(255, 255, 255, 0.03);
@@ -58,8 +53,6 @@ st.markdown("""
         color: #00f2fe;
         margin-top: 2px;
     }
-    
-    /* Neon Badges & Checklist elements */
     .status-badge {
         background: rgba(34, 197, 94, 0.1);
         color: #22c55e;
@@ -76,7 +69,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# The 20 Subsets Core Array
 target_categories = [
     'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
     'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
@@ -191,7 +183,7 @@ else:
 # --- 4. CONDITIONAL SWITCH ROUTER PANEL (Page 1 and Page 10 matched to Gym Nexus) ---
 
 if selected_page == "01 Executive Overview":
-    # ---- PAGE 1 DESIGN (Gym Nexus Style Mirroring) ----
+    # ---- PAGE 1 DESIGN (Gym Nexus Style Fix) ----
     st.markdown("""
         <div class='premium-card'>
             <span style='color: #00f2fe; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;'>EXECUTIVE OVERVIEW</span>
@@ -203,28 +195,18 @@ if selected_page == "01 Executive Overview":
         </div>
     """, unsafe_allow_html=True)
     
-    # 2x3 Luxury Grid Stack Layout for Metrics (Matches Section 00:00 of Gym Nexus video)
+    # 2x3 Luxury Grid Stack Layout for Metrics (FIXED: Uses separate html blocks to avoid unterminated f-string errors)
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.markdown(f"""
-            <div class='metric-container'>
-                <div style='float: right; color: #00f2fe; font-size: 11px;'>Live Scan</div>
-                <div class='metric-label'>Total Documents</div>
-                <div class='metric-val'>{len(working_df):,}</div>
-            </div>
-        """, unsafe_allow_html=True)
-        st.markdown(f"""
-            <div class='metric-container'>
-                <div style='float: right; color: #38bdf8; font-size: 11px;'>+1.0% YoY</div>
-                <div class='metric-label'>Avg Word Length</div>
-                <div class='metric-val'>{int(working_df['Word_Count'].mean()) if not working_df.empty else 0}</div>
-            </div>
-        """, unsafe_allow_html=True)
+        v1 = f"{len(working_df):,}"
+        st.markdown(f"<div class='metric-container'><div style='float: right; color: #00f2fe; font-size: 11px;'>Live Scan</div><div class='metric-label'>Total Documents</div><div class='metric-val'>{v1}</div></div>", unsafe_allow_html=True)
+        
+        v2 = int(working_df['Word_Count'].mean()) if not working_df.empty else 0
+        st.markdown(f"<div class='metric-container'><div style='float: right; color: #38bdf8; font-size: 11px;'>+1.0% YoY</div><div class='metric-label'>Avg Word Length</div><div class='metric-val'>{v2}</div></div>", unsafe_allow_html=True)
         
     with col2:
-        active_cnt = working_df['Category'].nunique() if not working_df.empty else 0
-        st.markdown(f"""
-            <div class='metric-container'>
-                <div style='float: right; color: #22c55e; font-size: 11px;'>Active Matrix</div>
-                <div class='metric-label'>Active Subsets</div>
-                <div class='metric-val'>{active_cnt} <span style='font-size:16px;
+        v3 = working_df['Category'].nunique() if not working_df.empty else 0
+        st.markdown(f"<div class='metric-container'><div style='float: right; color: #22c55e; font-size: 11px;'>Active Matrix</div><div class='metric-label'>Active Subsets</div><div class='metric-val'>{v3} <span style='font-size:16px; color:#64748b;'>/ 20</span></div></div>", unsafe_allow_html=True)
+        
+        v4 = round(working_df['Processing_Delay_ms'].mean(), 1) if not working_df.empty else 0
+        st.markdown(f"<div class='metric-container'><div style='float: right; color: #ef4444; font-size: 11px;'>Latency Load</div><div class='metric-label'>Avg
