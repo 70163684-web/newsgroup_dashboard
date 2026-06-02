@@ -4,7 +4,7 @@ import numpy as np
 import plotly.express as px
 from collections import Counter
 
-# --- 1. PAGE CONFIGURATION ---
+# --- 1. PAGE SETUP & CONFIGURATION ---
 st.set_page_config(
     page_title="EDA — 20-Newsgroups Intelligence Engine",
     page_icon="🔮",
@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# All 20 categories explicitly registered to ensure 20/20 distribution
+# Explicit definition of all 20 categories for default 20/20 active subset mapping
 target_categories = [
     'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
     'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
@@ -21,7 +21,7 @@ target_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. DYNAMIC NEWSGROUP DATA WORKSPACE ---
+# --- 2. THE 20-NEWSGROUPS SYNTHETIC DATA BASELINE ---
 @st.cache_data(ttl=3600)
 def compile_dataset_matrix():
     records = []
@@ -34,7 +34,7 @@ def compile_dataset_matrix():
         "Database handshake protocol established successfully."
     ]
     
-    # Generate high volume data matrices for balanced distribution
+    # Simulating 4000 master records distributed strictly over the 20 subsets
     for i in range(4000):
         cat = target_categories[i % 20]
         w_count = int(np.random.normal(loc=2200, scale=650))
@@ -49,6 +49,7 @@ def compile_dataset_matrix():
         else:
             sentiment = 'Neutral'
         
+        # Adding analytical layers like rainfall/anomaly analogues from reference video
         records.append({
             'Doc_ID': f"Intel_Node_{95000+i}.txt", 
             'Category': cat,
@@ -56,14 +57,16 @@ def compile_dataset_matrix():
             'Word_Count': w_count, 
             'Sentiment': sentiment, 
             'Sentiment_Score': round(score, 2),
-            'Timestamp_Year': int(np.random.choice([2022, 2023, 2024, 2025, 2026]))
+            'Pipeline_Year': int(np.random.choice([2022, 2023, 2024, 2025, 2026])),
+            'Processing_Delay_ms': int(np.random.uniform(100, 1200)),
+            'Linguistic_Complexity': round(np.random.uniform(10.5, 95.8), 2)
         })
         
     return pd.DataFrame(records)
 
 df = compile_dataset_matrix()
 
-# --- 3. PREMIUM SIDEBAR NAVIGATION HUB ---
+# --- 3. FUTURISTIC SIDEBAR NAVIGATION & HEADERS ---
 st.sidebar.markdown(
     """
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 5px;">
@@ -84,7 +87,7 @@ st.sidebar.markdown(
 
 st.sidebar.write("---")
 
-# 10 Points Navigation Setup
+# The Explicit 10-Point Routing Architecture
 navigation_options = [
     "01 Executive Overview",
     "02 Global Newsgroup Analytics",
@@ -105,10 +108,9 @@ selected_page = st.sidebar.radio(
 )
 
 st.sidebar.write("---")
-# STRING UNTERMINATED ERROR COMPLETELY FIXED HERE
 st.sidebar.subheader("🕹️ Control Matrix Filters")
 
-# Default values are set to ALL categories to ensure 20/20 distribution
+# Fixed default parameter maps all 20 items to achieve a stable 20/20 initial startup
 selected_categories = st.sidebar.multiselect(
     "Target Newsgroup Categories", 
     options=target_categories, 
