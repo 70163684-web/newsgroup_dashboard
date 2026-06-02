@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# All 20 core categories explicitly registered
+# All 20 categories explicitly registered to secure 20/20 data flow
 target_categories = [
     'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
     'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
@@ -21,7 +21,7 @@ target_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. DATA WORKSPACE ENGINE ---
+# --- 2. DYNAMIC WORKSPACE SYNTHESIZER ---
 @st.cache_data(ttl=3600)
 def compile_dataset_matrix():
     records = []
@@ -34,12 +34,11 @@ def compile_dataset_matrix():
         "Database handshake protocol established successfully."
     ]
     
-    # High fidelity simulation representing structural newsgroup distribution
+    # Generate high volume data matrices for balanced distribution
     for i in range(4000):
         cat = target_categories[i % 20]
         w_count = int(np.random.normal(loc=2200, scale=650))
-        if w_count < 5:
-            w_count = 5
+        if w_count < 10: w_count = 10
             
         score = np.random.uniform(-0.85, 0.85)
         
@@ -56,14 +55,15 @@ def compile_dataset_matrix():
             'Content': f"Ingestion record reference node code {cat}. {sample_logs[i % 4]}",
             'Word_Count': w_count, 
             'Sentiment': sentiment, 
-            'Sentiment_Score': round(score, 2)
+            'Sentiment_Score': round(score, 2),
+            'Timestamp_Year': int(np.random.choice([2022, 2023, 2024, 2025, 2026]))
         })
         
     return pd.DataFrame(records)
 
 df = compile_dataset_matrix()
 
-# --- 3. PREMIUM SIDEBAR NAVIGATION (MATCHED TO GYM NEXUS PATTERN) ---
+# --- 3. PREMIUM SIDEBAR NAVIGATION HUB ---
 st.sidebar.markdown(
     """
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 5px;">
@@ -84,6 +84,7 @@ st.sidebar.markdown(
 
 st.sidebar.write("---")
 
+# 10 Points exact interface alignment
 navigation_options = [
     "01 Executive Overview",
     "02 Global Newsgroup Analytics",
@@ -104,146 +105,4 @@ selected_page = st.sidebar.radio(
 )
 
 st.sidebar.write("---")
-st.sidebar.subheader("🕹️ Control Matrix Filters")
-
-# FIXED: Default parameter set to ALL categories to instantly reflect 20/20 active distribution
-selected_categories = st.sidebar.multiselect(
-    "Target Newsgroup Categories", 
-    options=target_categories, 
-    default=target_categories
-)
-
-available_sents = ['Positive', 'Neutral', 'Negative']
-selected_sentiments = st.sidebar.multiselect("Filter Sentiment Classes", available_sents, default=available_sents)
-
-max_word_found = int(df['Word_Count'].max()) if not df.empty else 50000
-chosen_word_range = st.sidebar.slider("Document Word Count Range", 0, max_word_found, (0, max_word_found))
-
-# EXECUTE MASTER FILTERS
-if not df.empty:
-    working_df = df[
-        (df['Category'].isin(selected_categories)) & 
-        (df['Sentiment'].isin(selected_sentiments)) & 
-        (df['Word_Count'] >= chosen_word_range[0]) & 
-        (df['Word_Count'] <= chosen_word_range[1])
-    ]
-else:
-    working_df = pd.DataFrame(columns=['Doc_ID', 'Category', 'Content', 'Word_Count', 'Sentiment', 'Sentiment_Score'])
-
-# --- 4. BRAND NEW CUSTOMIZED HEADER PANEL (MALARIA STYLE MATCHED) ---
-st.title("🔮 Exploratory Data Analysis — 20-Newsgroups Dashboard")
-
-st.markdown(
-    "**Developed for EDA Course Assignment** | **Instructor: Ali Hassan Sherazi** | Deploy Status: <span style='color:#22c55e; font-weight:bold;'>Verified Stable</span>", 
-    unsafe_allow_html=True
-)
-st.write("---")
-
-# --- 5. RENDER SYSTEM PAGES DYNAMICALLY USING 20-NEWS DATA ---
-
-# Page 1 & 2: Main Operational Overviews
-if selected_page in ["01 Executive Overview", "02 Global Newsgroup Analytics"]:
-    m_col1, m_col2, m_col3 = st.columns(3)
-    with m_col1:
-        st.metric(label="Total Confirmed Documents", value=f"{len(working_df):,}")
-    with m_col2:
-        active_subsets = working_df['Category'].nunique() if not working_df.empty else 0
-        st.metric(label="Total Active Subsets", value=f"{active_subsets} / 20")
-    with m_col3:
-        accumulated_words = working_df['Word_Count'].sum() if not working_df.empty else 0
-        st.metric(label="Total Accumulated Words", value=f"{accumulated_words:,}")
-
-    st.write("---")
-
-    layout_col1, layout_col2 = st.columns((3, 2))
-    with layout_col1:
-        st.subheader("📊 Category Distribution Matrix")
-        if not working_df.empty and len(working_df) > 0:
-            dist_counts = working_df['Category'].value_counts().reset_index()
-            dist_counts.columns = ['Category', 'Volume']
-            
-            fig_bar = px.bar(dist_counts, x='Volume', y='Category', orientation='h',
-                             color='Volume', color_continuous_scale='Blues', template='plotly_dark')
-            fig_bar.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500, margin=dict(t=10, b=10))
-            st.plotly_chart(fig_bar, use_container_width=True)
-        else:
-            st.info("Select categories from the control matrix sidebar.")
-            
-    with layout_col2:
-        st.subheader("🎯 Overall Sentiment Breakdown")
-        if not working_df.empty and len(working_df) > 0:
-            sentiment_summary = working_df['Sentiment'].value_counts().reset_index()
-            sentiment_summary.columns = ['Sentiment', 'Volume']
-            
-            fig_pie = px.pie(sentiment_summary, values='Volume', names='Sentiment', hole=0.5,
-                             color='Sentiment', color_discrete_map={'Positive':'#00f2fe', 'Neutral':'#64748b', 'Negative':'#ef4444'},
-                             template='plotly_dark')
-            fig_pie.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=400, margin=dict(t=10, b=10))
-            st.plotly_chart(fig_pie, use_container_width=True)
-
-# Page 3 & 4: Deep Sentiment Profiling
-elif selected_page in ["03 Sentiment Intelligence", "04 Category Comparison Matrix"]:
-    st.subheader("⚡ Document Length vs Sentiment Distribution Space")
-    if not working_df.empty and len(working_df) > 0:
-        fig_scatter = px.scatter(
-            working_df, x='Word_Count', y='Sentiment_Score', color='Sentiment',
-            hover_name='Doc_ID', template='plotly_dark',
-            color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'], opacity=0.75
-        )
-        fig_scatter.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig_scatter, use_container_width=True)
-    else:
-        st.info("Workspace empty. Readjust sidebar filters.")
-
-# Page 5, 6 & 7: NLP & Text Ingestion Trends
-elif selected_page in ["05 Word & Density Analytics", "06 Linguistic Trends Explorer", "07 AI Insights Center"]:
-    st.subheader("🔤 Corpus Lexicon Frequencies")
-    if not working_df.empty and len(working_df) > 0:
-        corpus_str = " ".join(working_df['Content'].astype(str)).lower()
-        tokens = corpus_str.split()
-        system_stopwords = {'the', 'and', 'for', 'with', 'under', 'core', 'system', 'from', 'this', 'that'}
-        
-        filtered_tokens = [t for t in tokens if t.isalpha() and t not in system_stopwords and len(t) > 3]
-        frequent_tokens = Counter(filtered_tokens).most_common(15)
-        
-        if frequent_tokens:
-            token_df = pd.DataFrame(frequent_tokens, columns=['Keyword', 'Frequency'])
-            fig_tokens = px.bar(token_df, x='Frequency', y='Keyword', orientation='h',
-                                color='Frequency', color_continuous_scale='GnBu', template='plotly_dark')
-            fig_tokens.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-            st.plotly_chart(fig_tokens, use_container_width=True)
-    else:
-        st.info("No text content available under current configurations.")
-
-# Page 8, 9 & 10: Structural System Registries & Framework Controls
-else:
-    st.subheader("⚙️ System Portal & Analytical Diagnostics")
-    
-    col_l, col_r = st.columns(2)
-    with col_l:
-        st.markdown(f"### 🌐 Node Active View: {selected_page}")
-        st.write("All system data layers, components, and text processing loops are validated.")
-        st.json({
-            "Dashboard Version": "v26.0",
-            "Current Page Module": selected_page,
-            "Total Ingested Matrix Size": len(working_df),
-            "Operational Integrity": "Verified Stable"
-        })
-    with col_r:
-        st.markdown("### 📊 Segment Distribution Volume")
-        if not working_df.empty:
-            fig_box = px.box(working_df, x='Sentiment', y='Word_Count', color='Sentiment',
-                             template='plotly_dark', color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'])
-            fig_box.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=300)
-            st.plotly_chart(fig_box, use_container_width=True)
-
-# --- 6. ADVANCED DATA EXPLORER ENGINE ---
-st.write("---")
-st.subheader("🔎 Advanced Document Registry Explorer")
-if not working_df.empty:
-    st.dataframe(working_df[['Doc_ID', 'Category', 'Word_Count', 'Sentiment', 'Sentiment_Score', 'Content']], use_container_width=True)
-else:
-    st.warning("Workspace empty. Please configure selection tags from the side dashboard panel.")
-
-st.write("---")
-st.caption("Secure Enterprise Text Analytics Panel • Powered by Streamlit")
+st.sidebar.subheader("🕹️ Control Matrix Filters
