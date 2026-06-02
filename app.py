@@ -12,7 +12,7 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# All 20 categories explicitly registered to secure 20/20 data flow
+# All 20 categories explicitly registered to ensure 20/20 distribution
 target_categories = [
     'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
     'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
@@ -21,7 +21,7 @@ target_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. DYNAMIC WORKSPACE SYNTHESIZER ---
+# --- 2. DYNAMIC NEWSGROUP DATA WORKSPACE ---
 @st.cache_data(ttl=3600)
 def compile_dataset_matrix():
     records = []
@@ -84,7 +84,7 @@ st.sidebar.markdown(
 
 st.sidebar.write("---")
 
-# 10 Points exact interface alignment
+# 10 Points Navigation Setup
 navigation_options = [
     "01 Executive Overview",
     "02 Global Newsgroup Analytics",
@@ -105,4 +105,17 @@ selected_page = st.sidebar.radio(
 )
 
 st.sidebar.write("---")
-st.sidebar.subheader("🕹️ Control Matrix Filters
+# STRING UNTERMINATED ERROR COMPLETELY FIXED HERE
+st.sidebar.subheader("🕹️ Control Matrix Filters")
+
+# Default values are set to ALL categories to ensure 20/20 distribution
+selected_categories = st.sidebar.multiselect(
+    "Target Newsgroup Categories", 
+    options=target_categories, 
+    default=target_categories
+)
+
+available_sents = ['Positive', 'Neutral', 'Negative']
+selected_sentiments = st.sidebar.multiselect("Filter Sentiment Classes", available_sents, default=available_sents)
+
+max_word_found = int(df
