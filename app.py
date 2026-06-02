@@ -4,15 +4,79 @@ import numpy as np
 import plotly.express as px
 from collections import Counter
 
-# --- 1. GLOBAL ENVIRONMENT SETUP ---
+# --- 1. GLOBAL STYLING & CORE ENVIRONMENT ---
 st.set_page_config(
-    page_title="EDA — 20-Newsgroups Intelligence Engine",
+    page_title="20-Newsgroups Intelligence Engine",
     page_icon="🔮",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# All 20 canonical text subsets registered securely
+# Custom High-End Cyberpunk Glassmorphism Styles (Gym Nexus Theme Adaptation)
+st.markdown("""
+    <style>
+    /* Main Background adjustments */
+    .stApp {
+        background-color: #030712;
+        color: #f3f4f6;
+    }
+    
+    /* Custom Modern Card Design */
+    .premium-card {
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.6) 0%, rgba(30, 41, 59, 0.4) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 24px;
+        margin-bottom: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Mini Metric Container */
+    .metric-container {
+        background: rgba(15, 23, 42, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.03);
+        border-left: 4px solid #00f2fe;
+        border-radius: 14px;
+        padding: 16px 20px;
+        margin-bottom: 15px;
+    }
+    .metric-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: #94a3b8;
+        margin-bottom: 4px;
+    }
+    .metric-val {
+        font-size: 28px;
+        font-weight: 700;
+        color: #ffffff;
+        font-family: 'Courier New', monospace;
+    }
+    .metric-sub {
+        font-size: 11px;
+        color: #00f2fe;
+        margin-top: 2px;
+    }
+    
+    /* Neon Badges & Checklist elements */
+    .status-badge {
+        background: rgba(34, 197, 94, 0.1);
+        color: #22c55e;
+        border: 1px solid rgba(34, 197, 94, 0.2);
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .glow-text {
+        text-shadow: 0 0 10px rgba(0,242,254,0.6);
+        color: #ffffff;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+# The 20 Subsets Core Array
 target_categories = [
     'alt.atheism', 'comp.graphics', 'comp.os.ms-windows.misc', 'comp.sys.ibm.pc.hardware',
     'comp.sys.mac.hardware', 'comp.windows.x', 'misc.forsale', 'rec.autos',
@@ -21,7 +85,7 @@ target_categories = [
     'talk.politics.guns', 'talk.politics.mideast', 'talk.politics.misc', 'talk.religion.misc'
 ]
 
-# --- 2. DATA INGESTION MATRIX SYNTHESIZER ---
+# --- 2. CACHED ENGINE DATA GENERATOR ---
 @st.cache_data(ttl=3600)
 def compile_dataset_matrix():
     records = []
@@ -37,8 +101,7 @@ def compile_dataset_matrix():
     for i in range(4000):
         cat = target_categories[i % 20]
         w_count = int(np.random.normal(loc=2200, scale=650))
-        if w_count < 10: 
-            w_count = 10
+        if w_count < 10: w_count = 10
             
         score = np.random.uniform(-0.85, 0.85)
         if score > 0.15:
@@ -64,7 +127,7 @@ def compile_dataset_matrix():
 
 df = compile_dataset_matrix()
 
-# --- 3. PREMIUM SIDEBAR CONTROL PORTAL ---
+# --- 3. PREMIUM FLOATING NAVIGATION SIDEBAR ---
 st.sidebar.markdown(
     """
     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 5px;">
@@ -107,20 +170,14 @@ selected_page = st.sidebar.radio(
 st.sidebar.write("---")
 st.sidebar.subheader("🕹️ Control Matrix Filters")
 
-selected_categories = st.sidebar.multiselect(
-    "Target Newsgroup Categories", 
-    options=target_categories, 
-    default=target_categories
-)
-
+selected_categories = st.sidebar.multiselect("Target Newsgroup Categories", options=target_categories, default=target_categories)
 available_sents = ['Positive', 'Neutral', 'Negative']
 selected_sentiments = st.sidebar.multiselect("Filter Sentiment Classes", available_sents, default=available_sents)
 
-# FIXED: Simplified calculation syntax onto a single clean string row to remove compilation errors
 max_word_found = int(df['Word_Count'].max()) if not df.empty else 50000
 chosen_word_range = st.sidebar.slider("Document Word Count Range", 0, max_word_found, (0, max_word_found))
 
-# PROCESS UNIVERSAL WORKING FILTER DATA
+# Ingest Filtering Parameters
 if not df.empty:
     working_df = df[
         (df['Category'].isin(selected_categories)) & 
@@ -131,156 +188,43 @@ if not df.empty:
 else:
     working_df = pd.DataFrame()
 
-# --- 4. BRAND NEW HARDWARE HEADER INTERFACE PANEL ---
-st.title("🔮 Exploratory Data Analysis — 20-Newsgroups Dashboard")
-st.markdown(
-    "**Developed for EDA Course Assignment** | **Instructor: Ali Hassan Sherazi** | Deploy Status: <span style='color:#22c55e; font-weight:bold;'>Verified Stable</span>", 
-    unsafe_allow_html=True
-)
-st.write("---")
-
-# MACRO LEVEL HIGHLIGHT METRICS
-col_m1, col_m2, col_m3 = st.columns(3)
-with col_m1:
-    st.metric(label="Total Confirmed Documents", value=f"{len(working_df):,}")
-with col_m2:
-    active_subsets = working_df['Category'].nunique() if not working_df.empty else 0
-    st.metric(label="Total Active Subsets", value=f"{active_subsets} / 20")
-with col_m3:
-    accumulated_words = working_df['Word_Count'].sum() if not working_df.empty else 0
-    st.metric(label="Total Accumulated Words", value=f"{accumulated_words:,}")
-
-st.write("---")
-
-# --- 5. THE 10 POINT PORTAL CONDITIONAL DISPLAY ROUTER ---
+# --- 4. CONDITIONAL SWITCH ROUTER PANEL (Page 1 and Page 10 matched to Gym Nexus) ---
 
 if selected_page == "01 Executive Overview":
-    st.markdown("### 📊 Portal 01: Macro Newsgroup Distribution Insights")
-    col_a, col_b = st.columns((3, 2))
-    with col_a:
-        st.subheader("1. Provincial Volume Distribution Across Target Categories")
-        if not working_df.empty and len(working_df) > 0:
-            counts = working_df['Category'].value_counts().reset_index(name='Volume')
-            fig_bar1 = px.bar(counts, x='Volume', y='Category', orientation='h',
-                              color='Volume', color_continuous_scale='Blues', template='plotly_dark')
-            fig_bar1.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=450)
-            st.plotly_chart(fig_bar1, use_container_width=True)
-    with col_b:
-        st.subheader("2. Total Ingested Sentiment Profile Summary")
-        if not working_df.empty and len(working_df) > 0:
-            s_summary = working_df['Sentiment'].value_counts().reset_index(name='Volume')
-            fig_pie1 = px.pie(s_summary, values='Volume', names='Sentiment', hole=0.5,
-                              color='Sentiment', color_discrete_map={'Positive':'#00f2fe', 'Neutral':'#64748b', 'Negative':'#ef4444'},
-                              template='plotly_dark')
-            fig_pie1.update_layout(paper_bgcolor='rgba(0,0,0,0)', height=400)
-            st.plotly_chart(fig_pie1, use_container_width=True)
-
-elif selected_page == "02 Global Newsgroup Analytics":
-    st.markdown("### 📈 Portal 02: Structural Longitudinal Trajectories")
-    col_a, col_b = st.columns(2)
-    with col_a:
-        st.subheader("3. Ingestion Timeline Sequence Frequency Trend (2022 - 2026)")
-        if not working_df.empty and len(working_df) > 0:
-            yearly_trend = working_df.groupby(['Pipeline_Year', 'Sentiment']).size().reset_index(name='Doc_Count')
-            fig_line = px.line(yearly_trend, x='Pipeline_Year', y='Doc_Count', color='Sentiment',
-                               color_discrete_sequence=['#ef4444', '#64748b', '#00f2fe'], template='plotly_dark')
-            fig_line.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-            st.plotly_chart(fig_line, use_container_width=True)
-    with col_b:
-        st.subheader("4. Combined Category Allocation Histograms")
-        if not working_df.empty and len(working_df) > 0:
-            fig_hist = px.histogram(working_df, x='Category', color='Sentiment', template='plotly_dark',
-                                    color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'])
-            fig_hist.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-            st.plotly_chart(fig_hist, use_container_width=True)
-
-elif selected_page == "03 Sentiment Intelligence":
-    st.markdown("### 🔍 Portal 03: Core Semantic Spread Space")
-    st.subheader("5. Document Word Count vs Sentiment Score Allocation Mapping")
-    if not working_df.empty and len(working_df) > 0:
-        fig_scatter = px.scatter(working_df, x='Word_Count', y='Sentiment_Score', color='Sentiment',
-                                 hover_name='Doc_ID', template='plotly_dark',
-                                 color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'], opacity=0.7)
-        fig_scatter.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig_scatter, use_container_width=True)
-
-elif selected_page == "04 Category Comparison Matrix":
-    st.markdown("### 🎚️ Portal 04: Multi-Variable Matrix Space")
-    st.subheader("6. Structural Dataset Correlation Heatmap")
-    if not working_df.empty and len(working_df) > 0:
-        corr_matrix = working_df[['Word_Count', 'Sentiment_Score', 'Processing_Delay_ms', 'Linguistic_Complexity']].corr()
-        fig_heat = px.imshow(corr_matrix, text_auto=True, color_continuous_scale='YlGnBu', template='plotly_dark')
-        fig_heat.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig_heat, use_container_width=True)
-
-elif selected_page == "05 Word & Density Analytics":
-    st.markdown("### 🔤 Portal 05: NLP Tokens & Frequency Hub")
-    st.subheader("7. Token Keyword Distribution Frequencies (Stopwords Excluded)")
-    if not working_df.empty and len(working_df) > 0:
-        corpus_str = " ".join(working_df['Content'].astype(str)).lower()
-        tokens = corpus_str.split()
-        system_stopwords = {'the', 'and', 'for', 'with', 'under', 'core', 'system', 'from', 'this', 'that'}
-        filtered_tokens = [t for t in tokens if t.isalpha() and t not in system_stopwords and len(t) > 3]
-        frequent_tokens = Counter(filtered_tokens).most_common(15)
+    # ---- PAGE 1 DESIGN (Gym Nexus Style Mirroring) ----
+    st.markdown("""
+        <div class='premium-card'>
+            <span style='color: #00f2fe; font-size: 11px; font-weight: bold; text-transform: uppercase; letter-spacing: 1.5px;'>EXECUTIVE OVERVIEW</span>
+            <h1 class='glow-text' style='margin-top: 5px; margin-bottom: 10px; font-size: 38px;'>Global Text & Category Intelligence</h1>
+            <p style='color: #94a3b8; max-width: 750px; font-size: 14px; margin-bottom: 0;'>
+                A futuristic AI-powered command center for NLP text analytics, semantic cluster density patterns, 
+                and context distribution across disparate newsgroup tracking modules.
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+    
+    # 2x3 Luxury Grid Stack Layout for Metrics (Matches Section 00:00 of Gym Nexus video)
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.markdown(f"""
+            <div class='metric-container'>
+                <div style='float: right; color: #00f2fe; font-size: 11px;'>Live Scan</div>
+                <div class='metric-label'>Total Documents</div>
+                <div class='metric-val'>{len(working_df):,}</div>
+            </div>
+        """, unsafe_allow_html=True)
+        st.markdown(f"""
+            <div class='metric-container'>
+                <div style='float: right; color: #38bdf8; font-size: 11px;'>+1.0% YoY</div>
+                <div class='metric-label'>Avg Word Length</div>
+                <div class='metric-val'>{int(working_df['Word_Count'].mean()) if not working_df.empty else 0}</div>
+            </div>
+        """, unsafe_allow_html=True)
         
-        if frequent_tokens:
-            token_df = pd.DataFrame(frequent_tokens, columns=['Keyword', 'Frequency'])
-            fig_tokens = px.bar(token_df, x='Frequency', y='Keyword', orientation='h',
-                                color='Frequency', color_continuous_scale='GnBu', template='plotly_dark')
-            fig_tokens.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)')
-            st.plotly_chart(fig_tokens, use_container_width=True)
-
-elif selected_page == "06 Linguistic Trends Explorer":
-    st.markdown("### 📊 Portal 06: Processing Load Analysis")
-    st.subheader("8. Cumulative Processing Latency (ms) Area Distribution")
-    if not working_df.empty and len(working_df) > 0:
-        fig_area = px.area(working_df.sort_values(by='Pipeline_Year'), x='Pipeline_Year', y='Processing_Delay_ms', color='Sentiment',
-                           template='plotly_dark', color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'])
-        fig_area.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig_area, use_container_width=True)
-
-elif selected_page == "07 AI Insights Center":
-    st.markdown("### 🧠 Portal 07: Statistical Box & Distribution Logs")
-    st.subheader("9. Linguistic Complexity Index (Density Spread Across Sentiment Profiles)")
-    if not working_df.empty and len(working_df) > 0:
-        fig_box = px.box(working_df, x='Sentiment', y='Linguistic_Complexity', color='Sentiment',
-                         template='plotly_dark', color_discrete_sequence=['#00f2fe', '#64748b', '#ef4444'])
-        fig_box.update_layout(paper_bgcolor='rgba(0,0,0,0)', plot_bgcolor='rgba(0,0,0,0)', height=500)
-        st.plotly_chart(fig_box, use_container_width=True)
-
-elif selected_page == "08 Predictive Analytics Hub":
-    st.markdown("### 🔮 Portal 08: Analytical Workspace Summaries")
-    st.subheader("10. Automated Statistical Metrics Matrix")
-    if not working_df.empty and len(working_df) > 0:
-        st.dataframe(working_df[['Word_Count', 'Sentiment_Score', 'Processing_Delay_ms', 'Linguistic_Complexity']].describe(), use_container_width=True)
-
-elif selected_page == "09 Regional Distribution Matrix":
-    st.markdown("### 🌐 Portal 09: Regional Metadata Cluster Ensembles")
-    st.info("Global cluster nodes are fully online. Streamlit virtualization network layer is stable.")
-    st.json({
-        "System Baseline": "20-Newsgroups Master Engine",
-        "Active Live Rows Ingested": len(working_df),
-        "Network Array Status": "Perfected Execution",
-        "Assigned Node ID": "Node_Cluster_X95"
-    })
-
-else:
-    st.markdown("### ⚙️ Portal 10: Settings & Core Environment Variables")
-    st.success("All pipelines are running smoothly under Environment Version 26.0.")
-    st.write("Use the left control matrix panel to modify data variables across all 10 analytical viewing stations dynamically.")
-
-# --- 6. UNIVERSAL GLOBAL CORE SPREADSHEET MATRIX ---
-st.write("---")
-st.subheader("📄 Complete Active Global Spreadsheet Matrix")
-st.markdown("Aap is standard grid table ko clean access kar sakte hain, columns toggle kar sakte hain, aur CSV output compile kar sakte hain.")
-
-if not working_df.empty and len(working_df) > 0:
-    st.dataframe(
-        working_df[['Doc_ID', 'Category', 'Word_Count', 'Sentiment', 'Sentiment_Score', 'Linguistic_Complexity', 'Processing_Delay_ms', 'Pipeline_Year']], 
-        use_container_width=True
-    )
-else:
-    st.warning("Workspace configuration empty. Select fields from the left panel control hub to sync database logs.")
-
-st.write("---")
-st.caption("Secure Enterprise Text Analytics Panel • Powered by Streamlit")
+    with col2:
+        active_cnt = working_df['Category'].nunique() if not working_df.empty else 0
+        st.markdown(f"""
+            <div class='metric-container'>
+                <div style='float: right; color: #22c55e; font-size: 11px;'>Active Matrix</div>
+                <div class='metric-label'>Active Subsets</div>
+                <div class='metric-val'>{active_cnt} <span style='font-size:16px;
