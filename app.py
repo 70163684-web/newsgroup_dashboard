@@ -196,9 +196,13 @@ if selected_page == "01 Executive Overview":
         v1 = "{:,}".format(len(working_df))
         st.markdown("<div class='metric-container'><div style='float: right; color: #00f2fe; font-size: 11px;'>Live Scan</div><div class='metric-label'>Total Documents</div><div class='metric-val'>" + v1 + "</div></div>", unsafe_allow_html=True)
         
-        v2 = str(int(working_df['Word_Count'].mean())) if not working_df.empty else "0"
+        v2 = "0"
+        if not working_df.empty:
+            v2 = str(int(working_df['Word_Count'].mean()))
         st.markdown("<div class='metric-container'><div style='float: right; color: #38bdf8; font-size: 11px;'>+1.0% YoY</div><div class='metric-label'>Avg Word Length</div><div class='metric-val'>" + v2 + "</div></div>", unsafe_allow_html=True)
         
     with col2:
-        v3 = str(working_df['Category'].nunique() if not working_df.empty else 0)
-        st.
+        v3 = "0"
+        if not working_df.empty:
+            v3 = str(working_df['Category'].nunique())
+        st.markdown("<div class='metric-container'><div style='float: right; color: #22c55e; font-size: 11px;'>Active Matrix</div><div class='metric-label'>Active Subsets</div><div class='metric-val'>" + v3 + " <span style='font-size:16px; color:#
